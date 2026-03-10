@@ -18,10 +18,11 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import NextLink from 'next/link';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useConfig } from '../context/ConfigContextProvider';
 import { options, scwUrls, sdkVersions } from '../store/config';
 import { cleanupSDKLocalStorage } from '../utils/cleanupSDKLocalStorage';
+import { downloadSessionAsZip } from '../utils/downloadAsZip';
 type LayoutProps = {
   children: React.ReactNode;
 };
@@ -40,6 +41,10 @@ export function Layout({ children }: LayoutProps) {
     localStorage.clear();
     window.location.reload();
   };
+
+  const handleDownload = useCallback(() => {
+    downloadSessionAsZip({ version, option, scwUrl });
+  }, [version, option, scwUrl]);
 
   const configs = useMemo(() => {
     return (
@@ -144,6 +149,9 @@ export function Layout({ children }: LayoutProps) {
                 configs
               )}
               {pages}
+              <Button colorScheme="blue" onClick={handleDownload}>
+                Download
+              </Button>
               <Button colorScheme="red" onClick={handleReset}>
                 Reset
               </Button>
